@@ -20,15 +20,12 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 
 # Copy the rest of your application code into the working directory
-# Note: This copy is useful for the image build, but for dev mode,
-# we'll typically use a volume mount to reflect local changes instantly.
+# Use .dockerignore to exclude node_modules, .next, .git etc.
 COPY . .
 
-# Expose the port the app will run on (as requested: 10000)
+# Expose the port the app will run on (as specified in package.json and requested: 10000)
 EXPOSE 10000
 
-# Command to run the Next.js development server
-# - H 0.0.0.0 makes the server accessible from outside the container network
-# - p 10000 specifies the port
-# Using '--' ensures arguments are passed to 'next dev', not 'pnpm run'
-CMD ["pnpm", "run", "dev", "--", "-H", "0.0.0.0", "-p", "10000"]
+# Command to run the Next.js development server using the 'dev' script from package.json
+# The arguments (-H 0.0.0.0 -p 10000) are now part of the script itself.
+CMD ["pnpm", "run", "dev"]
